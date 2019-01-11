@@ -17,7 +17,7 @@ export default {
     renderMap() {
       const map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: this.lat, lng: this.lng },
-        zoom: 6,
+        zoom: 7,
         maxZoom: 15,
         minZoom: 3,
         streetVieControl: false
@@ -36,6 +36,7 @@ export default {
   height: 100%;
   background: gray;
   position: absolute;
+  margin: 0 auto;
   left: 0px;
   top: 0px;
   z-index: -1;
