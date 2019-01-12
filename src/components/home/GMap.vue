@@ -22,7 +22,7 @@ export default {
         zoom: 7,
         maxZoom: 15,
         minZoom: 3,
-        streetVieControl: false
+        streetViewControl: false
       });
     }
   },
