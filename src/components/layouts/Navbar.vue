@@ -2,7 +2,7 @@
   <div class="navbar">
     <nav class="deep-purple darken-1">
       <div class="container">
-        <a href class="brand-logo left">GeoChat</a>
+        <router-link :to="{name:'GMap'}" class="brand-logo left">GeoChat</router-link>
         <ul class="right">
           <li>
             <router-link :to="{ name: 'Signup'}">Signup</router-link>
