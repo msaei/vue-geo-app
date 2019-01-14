@@ -10,7 +10,7 @@ admin.initializeApp()
 
 exports.checkAlias = functions.https.onCall((data, context) => {
 
-    const ref = admin.firestore().collection('users').get(data.slug);
+    const ref = admin.firestore().collection('users').doc(data.slug);
     return ref.get().then(doc => {
         return { uniqe: !doc.exists }
     }).catch(err => {

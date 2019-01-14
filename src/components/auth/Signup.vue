@@ -26,6 +26,7 @@
 import slugify from "slugify";
 import db from "@/firebase/init";
 import firebase from "firebase";
+import functions from "firebase/functions";
 
 export default {
   name: "Signup",
@@ -46,30 +47,35 @@ export default {
           remove: /[~!#$%^&*()?]/g,
           lower: true
         });
-        let ref = db.collection("users").doc(this.slug);
-        ref.get().then(doc => {
-          if (doc.exists) {
-            this.feedback = "this alias already exist";
-          } else {
-            firebase
-              .auth()
-              .createUserWithEmailAndPassword(this.email, this.password)
-              .then(user => {
-                ref.set({
-                  alias: this.alias,
-                  geolocation: null,
-                  user_id: user.uid
+        // let ref = db.collection("users").doc(this.slug);
+        let checkAlias = firebase.functions().httpsCallable("checkAlias");
+        checkAlias({ slug: this.slug })
+          .then(result => {
+            if (!result.data.uniqe) {
+              this.feedback = "this alias already exist";
+            } else {
+              firebase
+                .auth()
+                .createUserWithEmailAndPassword(this.email, this.password)
+                .then(user => {
+                  db.collection("users")
+                    .doc(this.slug)
+                    .set({
+                      alias: this.alias,
+                      geolocation: null,
+                      user_id: user.uid
+                    });
+                })
+                .then(() => {
+                  this.$router.push({ name: "GMap" });
+                })
+                .catch(err => {
+                  console.log(err);
+                  this.feedback = err.message;
                 });
-              })
-              .then(() => {
-                this.$router.push({ name: "GMap" });
-              })
-              .catch(err => {
-                console.log(err);
-                this.feedback = err.message;
-              });
-          }
-        });
+            }
+          })
+          .catch(err => console.log(err));
         console.log(this.slug);
       } else {
         this.feedback = "All fields are required";
